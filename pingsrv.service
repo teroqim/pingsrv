@@ -1,0 +1,22 @@
+[Unit]
+Description=Ping server
+After=etcd.service
+After=docker.service
+Requires=pingsrv-discovery@%i.service
+
+[Service]
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=0
+KillMode=none
+EnvironmentFile=/etc/environment
+
+#'-' means the unit file continues even if this cmd fails
+ExecStartPre=-/usr/bin/docker kill pingsrv%i
+ExecStartPre=-/usr/bin/docker rm pingsrv%i
+ExecStartPre=/bin/bash -c '/usr/bin/docker pull $(etcdctl get /announce/services/docker-registry/host)/pingsrv:latest'
+ExecStart=/bin/bash -c '/usr/bin/docker run --name pingsrv%i -p %i:8092 $(etcdctl get /announce/services/docker-registry/host)/pingsrv:latest'
+ExecStop=/usr/bin/docker stop pingsrv%i
+
+[X-Fleet]
+Conflicts=pingsrv@%i.service

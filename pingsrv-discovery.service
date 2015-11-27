@@ -1,0 +1,20 @@
+[Unit]
+Description=Announce pingsrv@%i service to etcd
+BindsTo=pingsrv@%i.service
+
+[Service]
+EnvironmentFile=/etc/environment
+ExecStart=/bin/bash -c '\
+    while true; do \
+        curl -f ${COREOS_PRIVATE_IPV4}:%i/ping; \
+        if [ $? -eq 0 ]; then \
+            etcdctl set /announce/services/pingsrv/${COREOS_PRIVATE_IPV4}%i \'${COREOS_PRIVATE_IPV4}:%i\' --ttl 30; \
+        else \
+            etcdctl rm /announce/services/pingsrv/${COREOS_PRIVATE_IPV4}%i; \
+        fi; \
+        sleep 20; \
+    done'
+ExecStop=/usr/bin/etcdctl rm /announce/services/pingsrv/${COREOS_PRIVATE_IPV4}%i
+
+[X-Fleet]
+MachineOf=pingsrv@%i.service

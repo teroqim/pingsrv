@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get install -y \
   python-dev=2.7.5-5ubuntu3 \
   curl \
-  apt-get clean
+  && apt-get clean
 
 RUN curl https://bootstrap.pypa.io/get-pip.py | python
 RUN pip install -U pip

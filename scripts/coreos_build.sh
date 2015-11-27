@@ -7,7 +7,7 @@ set -e
 #git pull origin master
 
 #Build dockerfile
-docker build --rm -t $(etcdctl get /announce/services/docker-registry/host)/sodioapi:latest .
+docker build --rm -t $(etcdctl get /announce/services/docker-registry/host)/pingsrv:latest .
 
 #Restart docker (hack for now, since docker _always_ hangs when trying to push image immediately after building it)
 sudo systemctl restart docker
@@ -15,5 +15,5 @@ sudo systemctl restart docker
 #TODO: Look into using the timeout command for the push and if it fails, then restart docker. Loop this for a while and if it still fails then exit
 
 #Push dockerfile
-docker push $(etcdctl get /announce/services/docker-registry/host)/sodioapi:latest
+docker push $(etcdctl get /announce/services/docker-registry/host)/pingsrv:latest
 

@@ -6,7 +6,7 @@ BindsTo=pingsrv@%i.service
 EnvironmentFile=/etc/environment
 ExecStart=/bin/bash -c '\
     while true; do \
-        curl -f ${COREOS_PRIVATE_IPV4}:%i/ping; \
+        curl -f ${COREOS_PRIVATE_IPV4}:%i/; \
         if [ $? -eq 0 ]; then \
             etcdctl set /announce/services/pingsrv/${COREOS_PRIVATE_IPV4}%i \'${COREOS_PRIVATE_IPV4}:%i\' --ttl 30; \
         else \
